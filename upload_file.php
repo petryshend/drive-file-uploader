@@ -3,13 +3,19 @@
 /** @var Google_Service_Drive $service */
 $service = require_once 'service.php';
 
-$fileMetadata = new Google_Service_Drive_DriveFile(array(
-    'name' => 'My Report',
-    'mimeType' => 'application/vnd.google-apps.spreadsheet'));
-$content = file_get_contents('report.csv');
-$file = $service->files->create($fileMetadata, array(
-    'data' => $content,
-    'mimeType' => 'text/csv',
-    'uploadType' => 'multipart',
-    'fields' => 'id'));
-printf("File ID: %s\n", $file->id);
+define('PATH_TO_FILES', '/home/px/Documents/somefiles/');
+
+$files = array_diff(scandir(PATH_TO_FILES), ['.', '..']);
+foreach ($files as $fileName) {
+    $fileMetadata = new Google_Service_Drive_DriveFile([
+        'name' => $fileName,
+    ]);
+    $content = file_get_contents(PATH_TO_FILES . $fileName);
+    $file = $service->files->create($fileMetadata, [
+        'data' => $content,
+        'mimeType' => 'image/jpeg',
+        'uploadType' => 'multipart',
+        'fields' => 'id'
+    ]);
+    printf("Uploaded file \"%s\" with Id %s\n", $fileName, $file->id);
+}
