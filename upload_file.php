@@ -18,4 +18,9 @@ foreach ($files as $fileName) {
         'fields' => 'id'
     ]);
     printf("Uploaded file \"%s\" with Id %s\n", $fileName, $file->id);
+
+    if ($file->id) {
+        unlink(PATH_TO_FILES . $fileName);
+    }
 }
+
